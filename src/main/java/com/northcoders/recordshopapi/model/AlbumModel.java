@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
+@Data // REPLACING getters,setters
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
