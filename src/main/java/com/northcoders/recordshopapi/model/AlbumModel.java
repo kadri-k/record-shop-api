@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data // REPLACING getters,setters
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @Table(name="albums")
 public class AlbumModel {
