@@ -12,4 +12,5 @@ public class RecordShopApiApplication {
 		SpringApplication.run(RecordShopApiApplication.class, args);
 	}
 
+
 }
