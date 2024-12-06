@@ -27,8 +27,8 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public AlbumModel createdAlbum(AlbumModel album) {
-        return null;
+    public AlbumModel createAlbum(AlbumModel album) {
+        return albumRepository.save(album);
     }
 
     @Override

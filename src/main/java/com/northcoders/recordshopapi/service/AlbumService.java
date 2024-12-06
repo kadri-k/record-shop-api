@@ -10,7 +10,7 @@ public interface AlbumService {
     List<AlbumModel> getAllAlbums();
     Optional<AlbumModel> getAlbumById(Long id);
 
-    AlbumModel createdAlbum(AlbumModel album);
+    AlbumModel createAlbum(AlbumModel album);
     AlbumModel updateAlbum(Long Id, AlbumModel album);
     void deleteAlbum(Long id);
 }
