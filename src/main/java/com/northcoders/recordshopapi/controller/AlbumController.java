@@ -30,8 +30,8 @@ public class AlbumController {
     @GetMapping("/{id}")
     public ResponseEntity<AlbumModel> getAlbumById(@PathVariable Long id) {
         return albumService.getAlbumById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(album -> ResponseEntity.ok(album))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping
