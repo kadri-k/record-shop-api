@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.Mockito.when;
 import java.util.List;
+import java.util.Optional;
 
 public class AlbumControllerTest {
 
@@ -50,5 +51,37 @@ public class AlbumControllerTest {
                 .andExpect(jsonPath("$[0].artist").value("The Doors"))
                 .andExpect(jsonPath("$[1].title").value("Kind Of Blue"))
                 .andExpect(jsonPath("$[1].artist").value("Miles Davis"));
+    }
+
+    @Test
+    public void getAlbumById_ReturnAlbumWhenIdExists() throws Exception{
+        // initialise mocks and mockmvc
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(albumController).build();
+
+        //arrange - mock the service response
+        AlbumModel mockAlbum = new AlbumModel("Strange Days", "The Doors", Genre.ROCK, 10, 15.99);
+        mockAlbum.setId(1L);
+        when(albumService.getAlbumById(1L)).thenReturn(Optional.of(mockAlbum));
+
+        // act & assert, calling the endpoint and verify the response
+        mockMvc.perform(get("/api/albums/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.title").value("Strange Days"))
+                .andExpect(jsonPath("$.artist").value("The Doors"));
+    }
+
+    @Test void getAlbumById_Return404WhenDoesNotExist() throws Exception {
+        // initialise mocks and mockmvc
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(albumController).build();
+
+        // Arrange - mock the service response
+        when(albumService.getAlbumById(99L)).thenReturn(Optional.empty());
+
+        // act & assert, calling the endpoint and verify the response
+        mockMvc.perform(get("/api/albums/99"))
+                .andExpect(status().isNotFound());
     }
 }
