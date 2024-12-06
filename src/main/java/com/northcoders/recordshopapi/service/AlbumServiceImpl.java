@@ -32,29 +32,23 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public AlbumModel updateAlbum(Long Id, AlbumModel album) {
-        return null;
+    // if existing album is found update the existing album fields with data
+    // from updated album using save() on albumRepository, return the updated album
+    // Else -> throw except.
+    public AlbumModel updateAlbum (Long id, AlbumModel updatedAlbum) {
+        Optional<AlbumModel> existingAlbum = albumRepository.findById(id);
+        if (existingAlbum.isPresent()) {
+            AlbumModel album = existingAlbum.get();
+            album.setTitle(updatedAlbum.getTitle());
+            album.setArtist(updatedAlbum.getArtist());
+            album.setGenre(updatedAlbum.getGenre());
+            album.setStock(updatedAlbum.getStock());
+            album.setPrice(updatedAlbum.getPrice());
+        return albumRepository.save(album);
+        } else {
+            throw new RuntimeException("Album with Id " + id +" not found. ");
+        }
     }
-
-
-//    @Override
-//    // if existing album is found update the existing album fields with data
-//    // from updated album using save() on albumRepository, return the updated album
-//    // Else -> throw except.
-//    public AlbumModel updateAlbum (Long id, AlbumModel updatedAlbum) {
-//        Optional<AlbumModel> existingAlbum = albumRepository.findById(id);
-//        if (existingAlbum.isPresent()) {
-//            AlbumModel album = existingAlbum.get();
-//            album.setTitle(updatedAlbum.getTitle());
-//            album.setArtist(updatedAlbum.getArtist());
-//            album.setGenre(updatedAlbum.getGenre());
-//            album.setStock(updatedAlbum.getStock());
-//            album.setPrice(updatedAlbum.getPrice());
-//        return albumRepository.save(album);
-//        } else {
-//            throw new RuntimeException("Album with Id " + id +" not found. ");
-//        }
-//    }
     @Override
     public void deleteAlbum(Long id) {
         albumRepository.deleteById(id);
