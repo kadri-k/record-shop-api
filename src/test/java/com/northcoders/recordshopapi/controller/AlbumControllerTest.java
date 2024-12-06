@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.Mockito.when;
@@ -94,8 +94,8 @@ public class AlbumControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(albumController).build();
 
         // Arrange: Mock the service response
-        AlbumModel mockAlbum = new AlbumModel("The Wall", "Pink Floyd", Genre.ROCK, 5, 19.00);
-        when(albumService.createdAlbum(any(AlbumModel.class))).thenReturn(mockAlbum);
+        AlbumModel mockAlbum = new AlbumModel("The Wall", "Pink Floyd", Genre.ROCK, 5, 20.00);
+        when(albumService.createAlbum(any(AlbumModel.class))).thenReturn(mockAlbum);
 
         // Act & Assert ; perform the post request
         mockMvc.perform(post("/api/albums")
@@ -109,4 +109,43 @@ public class AlbumControllerTest {
                 .andExpect(jsonPath("$.stock").value(5))
                 .andExpect(jsonPath("$.price").value(20));
     }
+
+    @Test
+    public void createAlbum_Returns400WhenInvalidInput() throws Exception {
+        // Initialize MockMvc
+        mockMvc = MockMvcBuilders.standaloneSetup(albumController).build();
+
+        // Act & Assert: Perform the POST request with invalid data
+        mockMvc.perform(post("/api/albums")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                  { "title": "", "artist": "", "genre": "ROCK", "stock": -1, "price": -5.00 }
+                                  """))
+                        .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateAlbum_ReturnUpdatedAlbum() throws Exception {
+        // Initialize MockMvc
+        mockMvc = MockMvcBuilders.standaloneSetup(albumController).build();
+
+        // Arrange: Mock the service response
+        AlbumModel mockUpdatedAlbum = new AlbumModel("Dark Side of the Moon", "Pink Floyd", Genre.ROCK, 8, 25.00);
+        when(albumService.updateAlbum(eq(1L), any(AlbumModel.class))).thenReturn(mockUpdatedAlbum);// eq - creates a matcher that says true only when the object is exactly equal to that one
+
+        // Act & Assert: Perform the PUT request
+        mockMvc.perform(put("/api/albums/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                         { "title": "The Wall", "artist": "Pink Floyd", "genre": "ROCK", "stock": 8, "price": 25.00 }
+                         } """))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.title").value("The Wall"))
+                .andExpect(jsonPath("$.artist").value("Pink Floyd"))
+                .andExpect(jsonPath("$.genre").value("ROCK"))
+                .andExpect(jsonPath("$.stock").value(8))
+                .andExpect(jsonPath("$.price").value(25));
+
+
+     }
 }
