@@ -18,11 +18,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -159,7 +158,19 @@ public class AlbumControllerTest {
          // Act & Assert: Perform the DELETE request
          mockMvc.perform(delete("/api/albums/1"))
                  .andExpect(status().isNoContent());     // response Http 204 no content
+     }
 
+     @Test
+    public void deleteAlbum_Returns404WhenNotFound() throws Exception {
+         // Initialize MockMvc
+         mockMvc = MockMvcBuilders.standaloneSetup(albumController).build();
 
+         // Mock the service to throw exception
+         doThrow(new RuntimeException("Album with Id 99 not found")).when(albumService).deleteAlbum(99L);
+
+         // Act & Assert: perform DELETE request
+         mockMvc.perform(delete("/api/albums/99"))
+                 .andExpect(status().isNotFound())
+                 .andExpect(content().string("Album with Id 99 not found"));
      }
 }
