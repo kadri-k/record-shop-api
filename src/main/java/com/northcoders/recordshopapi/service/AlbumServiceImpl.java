@@ -35,7 +35,7 @@ public class AlbumServiceImpl implements AlbumService {
     // if existing album is found update the existing album fields with data
     // from updated album using save() on albumRepository, return the updated album
     // Else -> throw except.
-    public AlbumModel updateAlbum (Long id, AlbumModel updatedAlbum) {
+    public AlbumModel updateAlbum(Long id, AlbumModel updatedAlbum) {
         Optional<AlbumModel> existingAlbum = albumRepository.findById(id);
         if (existingAlbum.isPresent()) {
             AlbumModel album = existingAlbum.get();
@@ -44,14 +44,20 @@ public class AlbumServiceImpl implements AlbumService {
             album.setGenre(updatedAlbum.getGenre());
             album.setStock(updatedAlbum.getStock());
             album.setPrice(updatedAlbum.getPrice());
-        return albumRepository.save(album);
+            return albumRepository.save(album);
         } else {
-            throw new RuntimeException("Album with Id " + id +" not found. ");
+            throw new RuntimeException("Album with Id " + id + " not found. ");
         }
     }
+
     @Override
     public void deleteAlbum(Long id) {
-        albumRepository.deleteById(id);
+        if (albumRepository.existsById(id)) {
+            albumRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Album with Id " + id + " not found.");
+        }
     }
 }
+
 

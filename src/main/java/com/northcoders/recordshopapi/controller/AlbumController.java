@@ -48,8 +48,18 @@ public class AlbumController {
 
     @PutMapping("/{id}")
     public ResponseEntity<AlbumModel> updateAlbum(@PathVariable Long id, @RequestBody AlbumModel updatedAlbum) {
-    AlbumModel updated = albumService.updateAlbum(id, updatedAlbum);
-    return ResponseEntity.ok(updated);
+        AlbumModel updated = albumService.updateAlbum(id, updatedAlbum);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAlbum(@PathVariable Long id) {
+        try {
+            albumService.deleteAlbum(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {                  // refactored
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }
 
