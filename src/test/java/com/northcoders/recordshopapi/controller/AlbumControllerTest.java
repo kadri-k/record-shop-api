@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -139,12 +140,25 @@ public class AlbumControllerTest {
                 .content("""
                          { "title": "The Wall", "artist": "Pink Floyd", "genre": "ROCK", "stock": 8, "price": 25.00 }
                          } """))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.title").value("The Wall"))
+                .andExpect(status().isOk()) // expect 200 OK
+                .andExpect(jsonPath("$.title").value("Dark Side of the Moon"))
                 .andExpect(jsonPath("$.artist").value("Pink Floyd"))
                 .andExpect(jsonPath("$.genre").value("ROCK"))
                 .andExpect(jsonPath("$.stock").value(8))
                 .andExpect(jsonPath("$.price").value(25));
+     }
+
+     @Test
+     public void deleteAlbum_ReturnsNoAlbum() throws Exception {
+         // Initialize MockMvc
+         mockMvc = MockMvcBuilders.standaloneSetup(albumController).build();
+
+         // Arrange: mock the service method to do nothing - void
+         doNothing().when(albumService).deleteAlbum(1L);
+
+         // Act & Assert: Perform the DELETE request
+         mockMvc.perform(delete("/api/albums/1"))
+                 .andExpect(status().isNoContent());     // response Http 204 no content
 
 
      }
