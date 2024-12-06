@@ -15,12 +15,16 @@ import java.util.Optional;
 public class AlbumController {
 
     private final AlbumService albumService;
+
     public AlbumController(AlbumService albumService) {
         this.albumService = albumService;
     }
-//    @GetMapping    // fetches and returns all albums as JSON list
-//    public ResponseEntity<List<AlbumModel>> getAllAlbums() {
-//        List<AlbumModel> albums = albumService.getAllAlbums();
-//        return ResponseEntity.ok(albums);
+
+    @GetMapping    // fetches and returns all albums as JSON list
+    public ResponseEntity<List<AlbumModel>> getAllAlbums() {
+        List<AlbumModel> albums = albumService.getAllAlbums();
+        return ResponseEntity.ok(albums);
     }
 }
+
+
