@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface AlbumService {
     List<AlbumModel> getAllAlbums();
-    Optional<AlbumModel> getAlbumsId(Long Id);
-
     Optional<AlbumModel> getAlbumById(Long id);
 
     AlbumModel createdAlbum(AlbumModel album);
