@@ -35,7 +35,13 @@ public class AlbumController {
     }
 
     @PostMapping
-    public ResponseEntity<AlbumModel> createAlbum(@RequestBody AlbumModel album) {
+    public ResponseEntity<?> createAlbum(@RequestBody AlbumModel album) {
+        if (album.getTitle() == null || album.getTitle().isBlank() ||
+                album.getArtist() == null || album.getArtist().isBlank() ||
+                album.getStock() < 0 || album.getPrice() < 0) {
+            return ResponseEntity.badRequest().body("Incorrect album data");
+        }
+
         AlbumModel createdAlbum = albumService.createAlbum(album);
         return new ResponseEntity<>(createdAlbum, HttpStatus.CREATED);
     }
