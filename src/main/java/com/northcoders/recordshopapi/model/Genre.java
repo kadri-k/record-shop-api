@@ -8,5 +8,7 @@ public enum Genre {
     RNB,
     ELECTRONIC,
     INDIE,
-    FUSION
+    FOLK,
+    FUSION,
+
 }
